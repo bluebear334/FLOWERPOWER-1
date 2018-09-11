@@ -1,0 +1,296 @@
+<head>
+<link rel="stylesheet" href="styles.css">
+<link href='https://fonts.googleapis.com/css?family=Press Start 2P' rel='stylesheet'>
+</head>
+
+<body>
+
+  <p id="CurrentValue" class = "font"> Placeholder</p>
+
+
+
+<body onload="GetOwnedTokens()">
+
+
+<button class="button" onclick="changePicture()">Display Your Flowers</button>
+<br><br>
+<button onclick="sendTransaction()">Send A Transaction</button>
+<br><br>
+<button onclick="mintToken">Mint A Token</button>
+<br><br>
+<button class="pad" onclick="giveFlower(1)">Pick Flower 1</button>
+
+<button onclick="giveFlower(2)">Pick Flower 2</button>
+
+<button onclick="giveFlower(3)">Pick Flower 3</button>
+
+<button onclick="giveFlower(4)">Pick Flower 4</button>
+
+<button onclick="giveFlower(5)">Pick Flower 5</button>
+<br> <br>
+<button onclick="getScore()">Get Gamer Score</button><br>
+<br> <br>
+<input type="text" placeholder="Address"id="ToAddress">
+
+<input type="number" placeholder="Flower Number" id ="TokenID">
+
+<button onclick="sendToken()">Send A Flower</button><br>
+
+
+<p>Tokens Owned:</p>
+
+
+
+
+
+  <script charset="utf-8"
+          src="https://cdn.ethers.io/scripts/ethers-v3.min.js"
+          type="text/javascript">
+  </script>
+
+  <script>
+
+  var OwnedTokens = [];
+
+  var abi =[{"constant":true,"inputs":[{"name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"GamerScore","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"}],"name":"GetScore","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"}],"name":"mintWithTokenURI","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"account","type":"address"}],"name":"addMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"renounceMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"account","type":"address"}],"name":"isMinter","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"name","type":"string"},{"name":"symbol","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[],"name":"MintingFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"MinterAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"MinterRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"indexed":false,"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"}]
+  var contractaddress = '0xc6a5479ba6cb9afce997d3dcfad2aa6420271585';
+  var providers = ethers.providers;
+  var utils = ethers.utils;
+  var network = providers.networks.ropsten;
+  var provider1 = providers.getDefaultProvider(network);
+  var provider = new providers.Web3Provider(web3.currentProvider,'ropsten');
+   var signer;
+
+
+   var tx = {
+       nonce: 83,
+       gasLimit: 21000,
+       gasPrice: utils.bigNumberify("20000000000"),
+
+       to: "0x88a5C2d9919e46F883EB62F7b8Dd9d0CC45bc290",
+
+       value: utils.parseEther("0.001"),
+       data: "0x",
+
+       // This ensures the transaction cannot be replayed on different networks
+       chainId: 3
+   };
+
+
+   function sendTransaction() {
+     provider.listAccounts().then(function(accounts) {
+        signer = provider.getSigner(accounts[0]);
+        console.log(accounts[0]);
+        console.log(signer);
+
+        signer.sendTransaction(tx).then(function(value){
+          console.log(value);
+        });
+    });
+   }
+
+   var privateKey = '0xcb3780cf3c27da1d1b6bf59bbba4d2825b12d71f3f8c42e81a43358823240408';
+
+   var wallet = new ethers.Wallet(privateKey, provider);
+
+    var contract = new ethers.Contract(contractaddress, abi, wallet);
+
+
+
+
+    // These are identical to the above call
+    // var callPromise = contract.functions.getValue();
+    // var callPromise = contract['getValue()']();
+    // var callPromise = contract.functions['getValue()']();
+    // var callPromise = contract['getValue()'](); s
+
+function GetOwnedTokens(){
+
+OwnedTokens = [];
+  provider.listAccounts().then(function(accounts) {
+
+    var GamerScorePromise = contract.GetScore(accounts[0]);
+    GamerScorePromise.then(function(result) {
+      console.log(parseFloat(result));
+      document.getElementById("CurrentValue").innerHTML = "Gamer Score: " + result;
+
+    });
+
+
+    CurrentAccount = accounts[0];
+
+    console.log("Current Account: " + CurrentAccount);
+
+
+    for (i = 1; i < 10; i++) {
+
+      var OwnerOfPromise = contract.ownerOf(i);
+      OwnerOfPromise.index = i;
+
+      setTimeout(function(owner) {
+        owner.then(function(result) {
+          console.log(result);
+          console.log(owner.index);
+          if(result==CurrentAccount){
+            OwnedTokens.push(owner.index);
+          }
+
+            console.log(OwnedTokens);
+
+
+
+      })
+
+      }, 100, OwnerOfPromise);
+  };
+ });
+
+
+
+
+}
+
+function changePicture()
+{
+    var arrayFlowers = OwnedTokens;
+    console.log(arrayFlowers);
+
+    for (let i = 0; i < arrayFlowers.length; i++) {
+        var img = document.createElement('img');
+        img.src = "img/" + arrayFlowers[i].toString() + ".png";
+        setTimeout(document.body.appendChild(img), 1000);
+    }
+
+}
+
+    function mintToken(){
+      var mintPromise = contract.mint('0xa6B86C9860d0cDe2752Ac2f5852412b446D7a098',2);
+
+
+
+      mintPromise.then(function(value) {
+
+
+          console.log('Single Return Value:' + value);
+          console.log("Minted Flower" + TokenID);
+      });
+    }
+
+    function sendToken(){
+
+        provider.listAccounts().then(function(accounts) {
+           signer = provider.getSigner(accounts[0]);
+           console.log(accounts[0]);
+          var _ToAddress = document.getElementById("ToAddress").innerHTML;
+          var _TokenID = document.getElementById("TokenID").value;
+          console.log(_TokenID);
+
+          var SendTokenPromise = contract.transferFrom(accounts[0],"0x89296e3bCa71Eb8C0d1FEF4796Ac72DE5b00C482",_TokenID
+          );
+
+          SendTokenPromise.then(function(result){
+            console.log(result);
+          })
+
+       });
+
+
+
+
+    }
+
+
+
+
+
+    // to call a non-constant function, the contract needs to be
+    // initialized with a wallet or a customSigner
+    var Value1;
+
+
+    //var estimatePromise = contract.estimate.mint('0xa6B86C9860d0cDe2752Ac2f5852412b446D7a098',1);
+
+function giveFlower(TokenID){
+
+  var mintPromise = contract.mint('0x79Bec515BC0646A719155f18805398755CDC55ED',TokenID);
+
+}
+
+function getScore(){
+var balancePromise = contract.balanceOf('0xa6B86C9860d0cDe2752Ac2f5852412b446D7a098');
+
+balancePromise.then(function(result) {
+  console.log(parseFloat(result));
+});
+
+var GamerScorePromise = contract.GetScore('0xa6B86C9860d0cDe2752Ac2f5852412b446D7a098');
+GamerScorePromise.then(function(result) {
+  console.log(parseFloat(result));
+  document.getElementById("CurrentValue").innerHTML = "Gamer Score: " + result;
+
+});
+
+}
+
+
+   function setValue(){
+     Value1 = document.getElementById("ValueToSet").value;
+     console.log("Value: " + Value1)
+     var sendPromise = contract.setValue(Value1);
+
+     sendPromise.then(function(transaction) {
+         console.log(transaction);
+     });
+   }
+
+
+
+   function getValue(){
+     var getValuePromise = contract.getValue();
+
+     getValuePromise.then(function(value) {
+       document.getElementById("CurrentValue").innerHTML = value;
+     });
+   }
+
+   function setValueMetamask() {
+     Value1 = document.getElementById("ValueToSet").value;
+
+
+     provider.listAccounts().then(function(accounts) {
+        var signer = provider.getSigner(accounts[0]);
+        console.log(accounts[0]);
+        console.log(provider);
+        console.log(signer);
+        var contract = new ethers.Contract(address, abi, signer);
+
+        var sendPromise = contract.setValue(Value1);
+
+        sendPromise.then(function(transaction) {
+            console.log(transaction);
+        });
+
+
+        })
+   }
+
+
+   function estimateGas(){
+     estimatePromise.then(function(gasCost) {
+         // gasCost is returned as BigNumber
+         console.log('Estimated Gas Cost: ' + gasCost.toString());
+     });
+   }
+
+   contract.onvaluechanged = function(oldValue, newValue) {
+       console.log('oldValue: ' + oldValue);
+       console.log('newValue: ' + newValue);
+
+   };
+
+
+  </script>
+
+
+
+</body>
